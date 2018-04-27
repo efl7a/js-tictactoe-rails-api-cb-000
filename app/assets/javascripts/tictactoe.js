@@ -11,7 +11,7 @@ var board = function () {
   clearGame()
   return createBoardArray()
 }
-var id
+var id = id || 0
 
 function player() {
   return ((turn % 2 === 0) ? "X":"O")
@@ -84,22 +84,28 @@ function attachListeners() {
 
 function saveGame(){
   if(id === 0) {
-    $.ajax({
-      type: "POST",
-      url: "/games",
-      data: {state: JSON.stringify(board)},
-      dataType: "json",
-      success: function(game){
-        id = game["data"]["id"]
-      }
+    var state = $.param({"state": board})
+    $.post("/games", state).done(function(game){
+      id = game["data"]["id"]
     })
+    // $.ajax({
+    //   type: "POST",
+    //   url: "/games",
+    //   data: {state: JSON.stringify(board)},
+    //   dataType: "json",
+    //   success: function(game){
+    //     id = game["data"]["id"]
+    //   }
+    // })
   } else {
-    $.ajax({
-      type: "PATCH",
-      url: "/games/" + id,
-      data: {state: JSON.stringify(board)},
-      dataType: "json"
-    })
+    $.post("/games/" + id, {_method: "PATCH", state: board})
+    //To pass tests, I have to use the code below.  I do not think it looks as nice though.
+    // $.ajax({
+    //   type: "PATCH",
+    //   url: "/games/" + id,
+    //   data: {state: JSON.stringify(board)},
+    //   dataType: "json"
+    // })
   }
 }
 
