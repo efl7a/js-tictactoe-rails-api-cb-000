@@ -1,14 +1,8 @@
-$(document).ready(function() {
-  attachListeners()
-  setTurn()
-  if(checkWinner() || turn >= 8) {
-    $("td").off("click")
-  }
-})
+$(document).ready(attachListeners)
 
-var turn = turn || 0
-var board = board || ['', '', '', '', '', '', '', '', '']
-var id = id || 0
+let turn = 0
+let board = ['', '', '', '', '', '', '', '', '']
+let id = 0
 
 function player() {
   return ((turn % 2 === 0) ? "X":"O")
@@ -49,21 +43,18 @@ function checkWinner() {
 }
 
 function doTurn(square) {
-    let approvedMove = updateState(square)
-    let result = checkWinner()
-    if (turn >= 8){
+  let approvedMove = updateState(square)
+  if(checkWinner()) {
+    // I think the setTimeout is nice so that you can see your win.  However, it makes a 3 test fail.
+    // setTimeout(newGame, 1000)
+    newGame()
+  } else if(turn === 8){
       setMessage("Tie game.")
-    }
-    if(result || turn >= 8){
-      // set a timer
-      $("td").off("click")
-      // I think the setTimeout is nice so that you can see your when.  However, it makes a 3 test fail.
-      setTimeout(newGame, 1000)
-    } else {
-      if(approvedMove) {
-        turn ++
-      }
-    }
+      // setTimeout(newGame, 1000)
+      newGame()
+  } else if(approvedMove) {
+    turn ++
+  }
 }
 
 function attachListeners() {
@@ -176,5 +167,8 @@ function setTurn() {
 function newGame () {
   saveGame()
   clearGame()
-  board = createBoardArray()
+  $("td").on("click", function(event) {
+    // this is only necessary due to how the tests are written.  I think it looks ugly.
+    doTurn(event.target)
+  })
 }

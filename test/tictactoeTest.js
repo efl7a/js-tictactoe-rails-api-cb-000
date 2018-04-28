@@ -22,7 +22,8 @@ function resetFixtures() {
   for (let i = 0; i < 9; i++) {
     squares[i].innerHTML = '';
   }
-  window.turn *= 0;
+  // window.turn *= 0;
+  turn = 0
   messageDiv.innerHTML = '';
   gamesDiv.innerHTML = '';
 }
@@ -50,7 +51,8 @@ describe('tictactoe.js', () => {
     });
 
     it('returns "O" when the turn count is odd', () => {
-      window.turn = 3;
+// changed to turn since window.turn was not changing my turn variable.  I thought due to let vs. var
+      turn = 3;
 
       expect(window.player()).to.equal('O');
     });
@@ -198,13 +200,14 @@ describe('tictactoe.js', () => {
     it('is defined', () => {
       expect(window.doTurn).to.be.a('function');
     });
-
+// changing window.turn to just turn
     it('increments the value of the "turn" variable', () => {
-      expect(window.turn).to.equal(0);
+      expect(turn).to.equal(0);
 
       window.doTurn(squares[0]);
 
-      expect(window.turn).to.equal(1);
+      // expect(window.turn).to.equal(1);
+      expect(turn).to.equal(1);
     });
 
     it('invokes the checkWinner() function', () => {
@@ -235,7 +238,8 @@ describe('tictactoe.js', () => {
       // -----------
       //  O |   | O
 
-      window.turn = 8;
+      // window.turn = 8;
+      turn = 8;
       window.doTurn(squares[7]);
 
       expect(spy.firstCall.args[0]).to.equal('Tie game.');
@@ -251,13 +255,18 @@ describe('tictactoe.js', () => {
       // -----------
       //    | O | O
 
-      window.turn = 8;
+      // window.turn = 8;
+      turn = 8;
       window.doTurn(squares[6]);
 
+      // setTimeout(function() {
+      //   const board = Array.from(squares).map(s => s.innerHTML);
+      // }, 3000)
       const board = Array.from(squares).map(s => s.innerHTML);
 
       expect(board).to.have.members(['', '', '', '', '', '', '', '', '']);
-      expect(window.turn).to.equal(0);
+      // expect(window.turn).to.equal(0);
+      expect(turn).to.equal(0);
     });
   });
 
